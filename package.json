@@ -10,7 +10,7 @@
     "build-min": "webpack -p modules/index.js umd/lib-boilerplate.min.js",
     "prepublish": "node ./scripts/build.js",
     "release": "node ./scripts/release.js",
-    "test": "npm run lint && karma start",
+    "test": "karma start",
     "lint": "eslint modules"
   },
   "devDependencies": {
@@ -43,5 +43,8 @@
     "react-dom": "^15.3.0",
     "readline-sync": "^1.4.4",
     "webpack": "1.14.0"
+  },
+  "dependencies": {
+    "es6-structs": "^1.1.0"
   }
 }
