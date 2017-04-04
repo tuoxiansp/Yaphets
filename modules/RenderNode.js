@@ -1,10 +1,10 @@
 /**
  * Created by b1ncer on 2017/4/1.
  */
-import Node from './Node'
 import Transform from './lib/Transform'
+import Node from './Node'
 
-export default class RenderNode extends Node {
+export class RenderNode extends Node {
 
     constructor(options = {}) {
         super()
@@ -16,26 +16,27 @@ export default class RenderNode extends Node {
     }
 
     get finalTransform() {
-        let finalTransform = this._cache.finalTransform
+        let finalTransform = this.getCache('finalTransform')
         if (!finalTransform) {
             let parentFinalTransform = this._parent ? this._parent.finalTransform : Transform.identity
             finalTransform = Transform.multiply4x4(parentFinalTransform, this.transform)
+            this.setCache('finalTransform', finalTransform)
         }
         return finalTransform
     }
 
     add(...args) {
         super.add(...args)
-        this._cache = {}
+        this.clearAllCache()
     }
 
     remove(...args) {
         super.remove(...args)
-        this._cache = {}
+        this.clearAllCache()
     }
 
     set transform(transform) {
-        this._clearCache('finalTransform')
+        this.cleanCache('finalTransform')
         this._transform = transform
     }
 
@@ -43,10 +44,31 @@ export default class RenderNode extends Node {
         return this._transform
     }
 
-    _clearCache(channel) {
-        this._cache[channel] = null
-        this.traversal(lazyNode => {
-            lazyNode.clearCache(channel)
-        })
+    getCache(prop) {
+        return this._cache[prop]
+    }
+
+    setCache(prop, value) {
+        this._cache[prop] = value
+    }
+
+    cleanCache(prop) {
+        const cache = this.getCache(prop)
+        if (cache === null || cache === undefined) {
+            this._children.forEach(child => {
+                child.cleanCache(prop)
+            })
+            this.setCache(prop, null)
+        }
+    }
+
+    clearAllCache() {
+        const cache = this._cache
+        if (Object.keys(cache).length > 0) {
+            this._children.forEach(child => {
+                child.clearAllCache()
+            })
+            this._cache = {}
+        }
     }
 }
