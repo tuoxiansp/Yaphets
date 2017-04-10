@@ -45,6 +45,7 @@
     "webpack": "1.14.0"
   },
   "dependencies": {
-    "es6-structs": "^1.1.0"
+    "es6-structs": "^1.1.0",
+    "prop-types": "^15.5.6",
   }
 }

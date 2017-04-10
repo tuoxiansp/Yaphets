@@ -1,7 +1,7 @@
 /**
  * Created by b1ncer on 2017/4/1.
  */
-import Transform from './lib/Transform'
+import Transform from '../lib/Transform'
 import Node from './Node'
 
 const DIRECTION = {

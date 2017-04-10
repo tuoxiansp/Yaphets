@@ -1,7 +1,7 @@
 /**
  * Created by b1ncer on 2017/4/1.
  */
-import RenderNode from '../RenderNode'
+import RenderNode from '../core/RenderNode'
 import expect from 'expect'
 import Transform from '../lib/Transform'
 

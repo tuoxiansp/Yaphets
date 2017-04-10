@@ -2,7 +2,7 @@
  * Created by b1ncer on 2017/4/1.
  */
 import expect from 'expect'
-import Node, {Tree} from '../Node'
+import Node, {Tree} from '../core/Node'
 import {Set} from 'es6-structs'
 if (!window.Set) {
     window.Set = Set
