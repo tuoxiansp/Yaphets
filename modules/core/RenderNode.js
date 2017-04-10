@@ -15,6 +15,7 @@ export default class RenderNode extends Node {
     constructor(options = {}) {
         super()
         this._cache = {}
+        this._listener = new Set()
         const {
             transform = Transform.identity,
             opacity = 1,
@@ -29,14 +30,68 @@ export default class RenderNode extends Node {
         this.align = align
     }
 
-    add(...args) {
-        super.add(...args)
-        this.clearAllCache()
+    //[fn]
+    addListener(listener) {
+        if (typeof listener != 'function') {
+            throw new Error('Listener must be a function')
+        }
+        return this._listener.add(listener)
     }
 
-    remove(...args) {
-        super.remove(...args)
-        this.clearAllCache()
+    once(listener) {
+        if (typeof listener != 'function') {
+            throw new Error('Listener must be a function')
+        }
+        const wrapper = (...args) => {
+            listener(...args)
+            this.removeListener(wrapper)
+        }
+        this.addListener(wrapper)
+        return wrapper
+    }
+
+    removeListener(listener) {
+        return this._listener.delete(listener)
+    }
+
+    output() {
+        const self = this
+        const getter = {
+            get transform() {
+                return self.transform
+            },
+            get finalTransform() {
+                return self.finalTransform
+            },
+            get opacity() {
+                return self.opacity
+            },
+            get finalOpacity() {
+                return self.finalOpacity
+            },
+            get mountPoint() {
+                return self.mountPoint
+            },
+            get size() {
+                return self.size
+            },
+            get align() {
+                return self.align
+            }
+        }
+        this._listener.forEach(listener => {
+            listener(getter)
+        })
+    }
+
+    add(node) {
+        super.add(node)
+        node.clearAllCache()
+    }
+
+    remove(node) {
+        super.remove(node)
+        node.clearAllCache()
     }
 
     set transform(transform) {
@@ -93,6 +148,33 @@ export default class RenderNode extends Node {
         return finalOpacity
     }
 
+    set mountPoint(value) {
+        this.cleanCache('finalTransform')
+        this._mountPoint = value
+    }
+
+    get mountPoint() {
+        return this._mountPoint
+    }
+
+    set size(value) {
+        this.cleanCache('finalTransform')
+        this._size = value
+    }
+
+    get size() {
+        return this._size
+    }
+
+    set align(value) {
+        this.cleanCache('finalTransform')
+        this._align = value
+    }
+
+    get align() {
+        return this._align
+    }
+
     getCache(prop) {
         return this._cache[prop]
     }
@@ -103,12 +185,13 @@ export default class RenderNode extends Node {
 
     cleanCache(prop) {
         const cache = this.getCache(prop)
-        if (cache === null || cache === undefined) {
+        if (!(cache === null || cache === undefined)) {
             this._children.forEach(child => {
                 child.cleanCache(prop)
             })
             this.setCache(prop, null)
         }
+        requestAnimationFrame(this.output.bind(this))
     }
 
     clearAllCache() {
@@ -119,5 +202,6 @@ export default class RenderNode extends Node {
             })
             this._cache = {}
         }
+        requestAnimationFrame(this.output.bind(this))
     }
 }
