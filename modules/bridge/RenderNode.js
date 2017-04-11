@@ -35,7 +35,7 @@ class RenderNode extends Component {
     }
 
     componentWillUnmount() {
-        this.context.node.remove(this._node)
+        this._node.destroy()
     }
 
     getChildContext() {

@@ -1,3 +1,5 @@
-export function start() {
+import RenderNode from './bridge/RenderNode'
 
+export {
+    RenderNode
 }
