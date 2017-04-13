@@ -29,6 +29,7 @@ export default class RenderNode extends Node {
         this.mountPoint = mountPoint
         this.size = size
         this.align = align
+        this._destroy = false
     }
 
     //[fn]
@@ -92,7 +93,19 @@ export default class RenderNode extends Node {
 
     remove(node) {
         super.remove(node)
-        node.clearAllCache()
+    }
+
+    destroy() {
+        if (this._destroy) return
+
+        this._destroy = true
+        this._listener.clear()
+        if (this._parent) {
+            this._parent.remove(this)
+        }
+        this._children.forEach(child => {
+            child.destroy()
+        })
     }
 
     set transform(transform) {
