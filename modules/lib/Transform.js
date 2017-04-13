@@ -7,8 +7,6 @@
  * @copyright Famous Industries, Inc. 2015
  */
 
-define(function(require, exports, module) {
-
     /**
      *  A high-performance static matrix math library used to calculate
      *    affine transforms on surfaces and other renderables.
@@ -679,4 +677,3 @@ define(function(require, exports, module) {
     Transform.behind = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, -1e-3, 1];
 
     module.exports = Transform;
-});

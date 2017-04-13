@@ -16,6 +16,7 @@ export default class RenderNode extends Node {
         super()
         this._cache = {}
         this._listener = new Set()
+        this._willUpdate = false
         const {
             transform = Transform.identity,
             opacity = 1,
@@ -191,7 +192,9 @@ export default class RenderNode extends Node {
             })
             this.setCache(prop, null)
         }
-        requestAnimationFrame(this.output.bind(this))
+        if (!this._willUpdate) {
+            requestAnimationFrame(this.output.bind(this))
+        }
     }
 
     clearAllCache() {
@@ -202,6 +205,8 @@ export default class RenderNode extends Node {
             })
             this._cache = {}
         }
-        requestAnimationFrame(this.output.bind(this))
+        if (!this._willUpdate) {
+            requestAnimationFrame(this.output.bind(this))
+        }
     }
 }
